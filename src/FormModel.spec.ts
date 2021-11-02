@@ -175,4 +175,42 @@ describe('FormModel', () => {
       ]);
     });
   });
+
+  describe('clearErrors', () => {
+    it('Clears errors from FormModel and all fields', () => {
+      const formModel = new FormModel({
+        name: {
+          label: 'Your name',
+          type: 'text',
+          paths: ['input.name'],
+        },
+        age: {
+          label: 'Your age',
+          type: 'number',
+          paths: ['input.age'],
+        },
+      });
+      formModel.applyServerValidationErrorToFields({
+        error: new Error(),
+        message: 'Invalid input',
+        violations: [
+          {
+            path: ['foo'],
+            message: 'Unmappable form error!',
+            value: null,
+          },
+          {
+            path: ['name'],
+            message: 'Name is required!',
+            value: null,
+          },
+        ],
+      });
+      formModel.clearErrors();
+
+      expect(formModel.hasErrors).toBe(false);
+      expect(formModel.errors).toEqual([]);
+      expect(formModel.fields.name.errors).toEqual([]);
+    });
+  });
 });
