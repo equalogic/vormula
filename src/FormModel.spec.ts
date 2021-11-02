@@ -29,6 +29,22 @@ describe('FormModel', () => {
     });
   });
 
+  describe('initialise', () => {
+    it('Initialises fields with given values', () => {
+      const formModel = new FormModel({
+        name: {
+          label: 'Your name',
+          type: 'text',
+          value: 'Joe Bloggs',
+        },
+      });
+      formModel.initialise({ name: 'Joseph Bloggs' });
+
+      expect(formModel.fields.name.initialValue).toEqual('Joseph Bloggs');
+      expect(formModel.fields.name.value).toEqual('Joseph Bloggs');
+    });
+  });
+
   describe('data', () => {
     it('Returns all form field values', () => {
       const formModel = new FormModel({
