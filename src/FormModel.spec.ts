@@ -42,4 +42,32 @@ describe('FormModel', () => {
       expect(formModel.data).toEqual({ name: 'Joe Bloggs' });
     });
   });
+
+  describe('hasChanged', () => {
+    it('Is true if any field has a value different from its initialValue', () => {
+      const formModel = new FormModel({
+        name: {
+          label: 'Your name',
+          type: 'text',
+        },
+      });
+      formModel.initialise({ name: 'Joe Bloggs' });
+      formModel.set('name', 'Joseph Bloggs');
+
+      expect(formModel.hasChanged).toBe(true);
+    });
+
+    it('Is false if all fields have values equal to their initialValues', () => {
+      const formModel = new FormModel({
+        name: {
+          label: 'Your name',
+          type: 'text',
+        },
+      });
+      formModel.initialise({ name: 'Joe Bloggs' });
+      formModel.set('name', 'Joe Bloggs');
+
+      expect(formModel.hasChanged).toBe(false);
+    });
+  });
 });
