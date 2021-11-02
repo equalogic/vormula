@@ -1,4 +1,4 @@
-import { FormModel } from './FormModel';
+import { FormModel, FormModelError } from './FormModel';
 
 describe('FormModel', () => {
   describe('set', () => {
@@ -84,6 +84,95 @@ describe('FormModel', () => {
       formModel.set('name', 'Joe Bloggs');
 
       expect(formModel.hasChanged).toBe(false);
+    });
+  });
+
+  describe('applyServerValidationErrorToFields', () => {
+    it('Maps given errors by field paths using dotted.path.notation', () => {
+      const formModel = new FormModel({
+        name: {
+          label: 'Your name',
+          type: 'text',
+          paths: ['input.name'],
+        },
+      });
+      formModel.applyServerValidationErrorToFields({
+        error: new Error(),
+        message: 'Invalid input',
+        violations: [
+          {
+            path: ['input', 'name'],
+            message: 'Name is required!',
+            value: null,
+          },
+        ],
+      });
+
+      expect(formModel.hasErrors).toBe(true);
+      expect(formModel.fields.name.errors).toEqual<FormModelError[]>([
+        {
+          message: 'Name is required!',
+          value: null,
+        },
+      ]);
+    });
+
+    it('Maps given errors by field paths using [array,path] notation', () => {
+      const formModel = new FormModel({
+        name: {
+          label: 'Your name',
+          type: 'text',
+          paths: [['input', 'name'], ['foo']],
+        },
+      });
+      formModel.applyServerValidationErrorToFields({
+        error: new Error(),
+        message: 'Invalid input',
+        violations: [
+          {
+            path: ['input', 'name'],
+            message: 'Name is required!',
+            value: null,
+          },
+        ],
+      });
+
+      expect(formModel.hasErrors).toBe(true);
+      expect(formModel.fields.name.errors).toEqual<FormModelError[]>([
+        {
+          message: 'Name is required!',
+          value: null,
+        },
+      ]);
+    });
+
+    it('Applies unmapped errors to the FormModel', () => {
+      const formModel = new FormModel({
+        name: {
+          label: 'Your name',
+          type: 'text',
+          paths: ['input.name'],
+        },
+      });
+      formModel.applyServerValidationErrorToFields({
+        error: new Error(),
+        message: 'Invalid input',
+        violations: [
+          {
+            path: ['foo'],
+            message: 'Unmappable form error!',
+            value: null,
+          },
+        ],
+      });
+
+      expect(formModel.hasErrors).toBe(true);
+      expect(formModel.errors).toEqual<FormModelError[]>([
+        {
+          message: 'Unmappable form error!',
+          value: null,
+        },
+      ]);
     });
   });
 });
