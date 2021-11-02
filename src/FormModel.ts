@@ -1,5 +1,5 @@
 import { FormModelField, FormModelFieldInput } from './FormModelField';
-import { ServerValidationError} from './validation/ServerValidationError';
+import { ServerValidationError } from './validation/ServerValidationError';
 import { ValidationRuleViolation } from './validation/ValidationRuleViolation';
 
 export interface FormModelError {
@@ -60,7 +60,10 @@ export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFiel
   }
 
   public get hasErrors(): boolean {
-    return Object.values(this.fields).some(field => field.errors != null && field.errors.length > 0);
+    return (
+      this.errors.length > 0 ||
+      Object.values(this.fields).some(field => field.errors != null && field.errors.length > 0)
+    );
   }
 
   public initialise(data: Partial<FormModelData<TFieldsInput>>): void {
