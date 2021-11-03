@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "preserveConstEnums": true,
+    "strict": true,
     "strictNullChecks": true,
     "outDir": "./dist",
     "baseUrl": "./",
