@@ -65,10 +65,7 @@ export class FormModel<TData extends FormModelData = FormModelData> {
       const value = data[key];
 
       this.fields[key].initialValue = value;
-
-      if (value != null) {
-        this.fields[key].value = value;
-      }
+      this.fields[key].value = value;
     });
   }
 
