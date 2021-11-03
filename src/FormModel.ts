@@ -1,11 +1,11 @@
-import { FormModelField, FormModelFieldInput } from './FormModelField';
+import { FormModelField, FormModelFieldSchema } from './FormModelField';
 import { ServerValidationError } from './validation/ServerValidationError';
 import { ValidationRuleViolation } from './validation/ValidationRuleViolation';
 
 export type FormModelData = Record<string, any>;
 
-export type FormModelFieldsInput<TData extends FormModelData = FormModelData> = {
-  [K in keyof TData]: FormModelFieldInput<TData[K]>;
+export type FormModelSchema<TData extends FormModelData = FormModelData> = {
+  [K in keyof TData]: FormModelFieldSchema<TData[K]>;
 };
 
 export type FormModelFields<TData extends FormModelData = FormModelData> = {
@@ -21,9 +21,9 @@ export class FormModel<TData extends FormModelData = FormModelData> {
   public fields: FormModelFields<TData>;
   public errors: FormModelError[] = [];
 
-  public constructor(fields: FormModelFieldsInput<TData>) {
-    this.fields = Object.keys(fields).reduce((result, key: keyof TData) => {
-      const field = fields[key];
+  public constructor(schema: FormModelSchema<TData>) {
+    this.fields = Object.keys(schema).reduce((result, key: keyof TData) => {
+      const field = schema[key];
 
       if (field.name !== undefined && field.name !== key) {
         throw new Error(
@@ -41,7 +41,7 @@ export class FormModel<TData extends FormModelData = FormModelData> {
         errors: [],
         validationRules: [],
         ...field,
-      } as FormModelFields<TData>[typeof key];
+      } as FormModelField<TData[typeof key]>;
 
       return result;
     }, {} as FormModelFields<TData>);
