@@ -45,7 +45,6 @@ export interface FormModelField<TValue = any> extends FormModelFieldSchema<TValu
   name: string;
   type: FormModelFieldType;
   initialValue?: TValue;
-  value: TValue;
   required: boolean;
   validationRules: FormModelFieldValidationRules;
   errors: FormModelError[];

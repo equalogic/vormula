@@ -28,8 +28,8 @@ export class FormModel<TData extends FormModelData = FormModelData> {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       result[key] = {
         name: key,
-        initialValue: field.value ?? '',
-        value: field.value ?? '',
+        initialValue: field.value,
+        value: field.value,
         type: field.type ?? 'text',
         required: false,
         errors: [],
@@ -41,12 +41,12 @@ export class FormModel<TData extends FormModelData = FormModelData> {
     }, {} as FormModelFields<TData>);
   }
 
-  public get data(): TData {
-    return Object.values(this.fields).reduce((result, field) => {
-      result[field.name] = field.value;
+  public get data(): Partial<TData> {
+    return Object.keys(this.fields).reduce((data: Partial<TData>, key: keyof TData) => {
+      data[key] = this.fields[key].value;
 
-      return result;
-    }, {} as TData);
+      return data;
+    }, {} as Partial<TData>);
   }
 
   public get hasChanged(): boolean {
@@ -65,14 +65,11 @@ export class FormModel<TData extends FormModelData = FormModelData> {
       const value = data[key];
 
       this.fields[key].initialValue = value;
-
-      if (value != null) {
-        this.fields[key].value = value;
-      }
+      this.fields[key].value = value;
     });
   }
 
-  public get<K extends keyof TData>(key: K): TData[K] {
+  public get<K extends keyof TData>(key: K): TData[K] | undefined {
     if (this.fields[key] === undefined) {
       throw new Error(`Unable to get value of field '${key}' because it is not defined in the FormModel.`);
     }
