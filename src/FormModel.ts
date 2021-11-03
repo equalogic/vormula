@@ -2,27 +2,27 @@ import { FormModelField, FormModelFieldInput } from './FormModelField';
 import { ServerValidationError } from './validation/ServerValidationError';
 import { ValidationRuleViolation } from './validation/ValidationRuleViolation';
 
+export type FormModelData = Record<string, any>;
+
+export type FormModelFieldsInput<TData extends FormModelData = FormModelData> = {
+  [K in keyof TData]: FormModelFieldInput<TData[K]>;
+};
+
+export type FormModelFields<TData extends FormModelData = FormModelData> = {
+  [K in keyof TData]: FormModelField<TData[K]>;
+};
+
 export interface FormModelError {
   message: string;
   value?: any;
 }
 
-type FormModelFieldsInput = Record<string, FormModelFieldInput>;
-type FormModelFields<TFieldsInput extends FormModelFieldsInput> = {
-  [K in keyof TFieldsInput]: FormModelField<
-    TFieldsInput[K]['value'] extends undefined ? string : TFieldsInput[K]['value']
-  >;
-};
-type FormModelData<TFieldsInput extends FormModelFieldsInput> = {
-  [K in keyof TFieldsInput]: TFieldsInput[K]['value'] extends undefined ? string : TFieldsInput[K]['value'];
-};
-
-export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFieldsInput> {
-  public fields: FormModelFields<TFieldsInput>;
+export class FormModel<TData extends FormModelData = FormModelData> {
+  public fields: FormModelFields<TData>;
   public errors: FormModelError[] = [];
 
-  public constructor(fields: TFieldsInput) {
-    this.fields = Object.keys(fields).reduce((result, key: keyof TFieldsInput) => {
+  public constructor(fields: FormModelFieldsInput<TData>) {
+    this.fields = Object.keys(fields).reduce((result, key: keyof TData) => {
       const field = fields[key];
 
       if (field.name !== undefined && field.name !== key) {
@@ -41,18 +41,18 @@ export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFiel
         errors: [],
         validationRules: [],
         ...field,
-      } as FormModelFields<TFieldsInput>[typeof key];
+      } as FormModelFields<TData>[typeof key];
 
       return result;
-    }, {} as FormModelFields<TFieldsInput>);
+    }, {} as FormModelFields<TData>);
   }
 
-  public get data(): FormModelData<TFieldsInput> {
+  public get data(): TData {
     return Object.values(this.fields).reduce((result, field) => {
       result[field.name] = field.value;
 
       return result;
-    }, {} as FormModelData<TFieldsInput>);
+    }, {} as TData);
   }
 
   public get hasChanged(): boolean {
@@ -66,7 +66,7 @@ export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFiel
     );
   }
 
-  public initialise(data: Partial<FormModelData<TFieldsInput>>): void {
+  public initialise(data: Partial<TData>): void {
     Object.keys(data).forEach(key => {
       const value = data[key];
 
@@ -78,7 +78,7 @@ export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFiel
     });
   }
 
-  public get<K extends keyof TFieldsInput>(key: K): TFieldsInput[K]['value'] {
+  public get<K extends keyof TData>(key: K): TData[K] {
     if (this.fields[key] === undefined) {
       throw new Error(`Unable to get value of field '${key}' because it is not defined in the FormModel.`);
     }
@@ -86,7 +86,7 @@ export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFiel
     return this.fields[key].value;
   }
 
-  public set<K extends keyof TFieldsInput>(key: K, value: TFieldsInput[K]['value']): void {
+  public set<K extends keyof TData>(key: K, value: TData[K]): void {
     if (this.fields[key] === undefined) {
       throw new Error(`Unable to set value of field '${key}' because it is not defined in the FormModel.`);
     }
@@ -95,7 +95,7 @@ export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFiel
   }
 
   public clearErrors(): void {
-    this.fields = Object.keys(this.fields).reduce((result, key: keyof TFieldsInput) => {
+    this.fields = Object.keys(this.fields).reduce((result, key: keyof TData) => {
       const field = this.fields[key];
 
       result[key] = {
@@ -104,7 +104,7 @@ export class FormModel<TFieldsInput extends FormModelFieldsInput = FormModelFiel
       };
 
       return result;
-    }, {} as FormModelFields<TFieldsInput>);
+    }, {} as FormModelFields<TData>);
 
     this.errors = [];
   }

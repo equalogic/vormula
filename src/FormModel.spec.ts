@@ -3,7 +3,7 @@ import { FormModel, FormModelError } from './FormModel';
 describe('FormModel', () => {
   describe('set', () => {
     it('Sets a field value', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -17,7 +17,7 @@ describe('FormModel', () => {
 
   describe('get', () => {
     it('Gets a field value', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -31,7 +31,7 @@ describe('FormModel', () => {
 
   describe('initialise', () => {
     it('Initialises fields with given values', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -47,7 +47,7 @@ describe('FormModel', () => {
 
   describe('data', () => {
     it('Returns all form field values', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -61,7 +61,7 @@ describe('FormModel', () => {
 
   describe('hasChanged', () => {
     it('Is true if any field has a value different from its initialValue', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -74,7 +74,7 @@ describe('FormModel', () => {
     });
 
     it('Is false if all fields have values equal to their initialValues', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -89,7 +89,7 @@ describe('FormModel', () => {
 
   describe('applyServerValidationErrorToFields', () => {
     it('Maps given errors by field paths using dotted.path.notation', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -118,7 +118,7 @@ describe('FormModel', () => {
     });
 
     it('Maps given errors by field paths using [array,path] notation', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -147,7 +147,7 @@ describe('FormModel', () => {
     });
 
     it('Applies unmapped errors to the FormModel', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string }>({
         name: {
           label: 'Your name',
           type: 'text',
@@ -178,7 +178,7 @@ describe('FormModel', () => {
 
   describe('clearErrors', () => {
     it('Clears errors from FormModel and all fields', () => {
-      const formModel = new FormModel({
+      const formModel = new FormModel<{ name: string; age: number }>({
         name: {
           label: 'Your name',
           type: 'text',
