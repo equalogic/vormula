@@ -25,12 +25,6 @@ export class FormModel<TData extends FormModelData = FormModelData> {
     this.fields = Object.keys(schema).reduce((result, key: keyof TData) => {
       const field = schema[key];
 
-      if (field.name !== undefined && field.name !== key) {
-        throw new Error(
-          `Error constructing FormModel: Field with key "${key}" has name attribute "${field.name}". The name, if specified, must be equal to the key.`,
-        );
-      }
-
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       result[key] = {
         name: key,
