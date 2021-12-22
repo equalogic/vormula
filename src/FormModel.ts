@@ -64,6 +64,12 @@ export class FormModel<TData extends FormModelData = FormModelData> {
     Object.keys(data).forEach(key => {
       const value = data[key];
 
+      if (this.fields[key] == null) {
+        console.warn(`Unable to initialise non-existent form field with key '${key}'`);
+
+        return;
+      }
+
       this.fields[key].initialValue = value;
       this.fields[key].value = value;
     });
