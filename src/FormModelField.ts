@@ -19,13 +19,17 @@ export type FormModelFieldType =
   | 'file'
   | 'textarea'
   | 'select'
+  | 'autocomplete'
   | 'checkbox'
+  | 'switch'
   | 'radio'
-  | 'hidden';
+  | 'radiobutton'
+  | 'hidden'
+  | string;
 
 export interface FormModelFieldOption {
   key?: string;
-  value: string;
+  value: any;
   label: string;
 }
 
@@ -33,6 +37,7 @@ export type FormModelFieldValidationRules = string[] | Record<string, boolean | 
 
 export interface FormModelFieldTransformer<TValue = any, TOutput = any> {
   toModelValue(input: TOutput | TValue | undefined): TValue;
+
   toOutputValue(input: TValue | undefined): TOutput;
 }
 
