@@ -21,8 +21,10 @@ export type FormModelFieldType =
   | 'select'
   | 'autocomplete'
   | 'checkbox'
+  | 'switch'
   | 'radio'
-  | 'hidden';
+  | 'radiobutton'
+  | 'hidden'
 
 export interface FormModelFieldOption {
   key?: string;
