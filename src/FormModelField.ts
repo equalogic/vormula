@@ -25,6 +25,7 @@ export type FormModelFieldType =
   | 'radio'
   | 'radiobutton'
   | 'hidden'
+  | string;
 
 export interface FormModelFieldOption {
   key?: string;
