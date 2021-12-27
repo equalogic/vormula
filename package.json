@@ -1,6 +1,6 @@
 {
   "name": "@madsci/vormula",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A simple form model library for Vue.js applications.",
   "author": "Madscience Ltd",
   "license": "MIT",
