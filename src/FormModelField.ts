@@ -19,6 +19,7 @@ export type FormModelFieldType =
   | 'file'
   | 'textarea'
   | 'select'
+  | 'autocomplete'
   | 'checkbox'
   | 'radio'
   | 'hidden';
@@ -33,6 +34,7 @@ export type FormModelFieldValidationRules = string[] | Record<string, boolean | 
 
 export interface FormModelFieldTransformer<TValue = any, TOutput = any> {
   toModelValue(input: TOutput | TValue | undefined): TValue;
+
   toOutputValue(input: TValue | undefined): TOutput;
 }
 
