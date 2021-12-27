@@ -31,7 +31,12 @@ export interface FormModelFieldOption {
 
 export type FormModelFieldValidationRules = string[] | Record<string, boolean | Record<string, any>>;
 
-export interface FormModelFieldSchema<TValue = any> {
+export interface FormModelFieldTransformer<TValue = any, TOutput = any> {
+  toModelValue(input: TOutput | TValue | undefined): TValue;
+  toOutputValue(input: TValue | undefined): TOutput;
+}
+
+export interface FormModelFieldSchema<TValue = any, TOutput = TValue> {
   label: string;
   type?: FormModelFieldType;
   value?: TValue;
@@ -39,9 +44,10 @@ export interface FormModelFieldSchema<TValue = any> {
   required?: boolean;
   validationRules?: FormModelFieldValidationRules;
   paths?: string[] | string[][];
+  transform?: FormModelFieldTransformer<TValue, TOutput>;
 }
 
-export interface FormModelField<TValue = any> extends FormModelFieldSchema<TValue> {
+export interface FormModelField<TValue = any, TOutput = any> extends FormModelFieldSchema<TValue, TOutput> {
   name: string;
   type: FormModelFieldType;
   initialValue?: TValue;

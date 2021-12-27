@@ -57,6 +57,37 @@ describe('FormModel', () => {
 
       expect(formModel.data).toEqual({ name: 'Joe Bloggs' });
     });
+
+    it('Transforms form field values when given a transformer', () => {
+      const formModel = new FormModel<{ name: string }, { name: string | null }>({
+        name: {
+          label: 'Your name',
+          type: 'text',
+          transform: {
+            toModelValue(input: string | undefined): string {
+              if (input == null) {
+                return '';
+              }
+
+              return input.toUpperCase();
+            },
+            toOutputValue(input: string | undefined): string | null {
+              if (input == null || input.length === 0) {
+                return null;
+              }
+
+              return input.toUpperCase();
+            },
+          },
+        },
+      });
+
+      formModel.set('name', 'Joe Bloggs');
+      expect(formModel.data).toEqual({ name: 'JOE BLOGGS' });
+
+      formModel.set('name', '');
+      expect(formModel.data).toEqual({ name: null });
+    });
   });
 
   describe('hasChanged', () => {
