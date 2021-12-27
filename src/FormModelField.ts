@@ -29,7 +29,7 @@ export type FormModelFieldType =
 
 export interface FormModelFieldOption {
   key?: string;
-  value: string;
+  value: any;
   label: string;
 }
 
