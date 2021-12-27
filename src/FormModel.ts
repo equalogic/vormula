@@ -74,7 +74,7 @@ export class FormModel<
     );
   }
 
-  public initialise(input: Partial<TValues | TOutput>): void {
+  public initialise(input: Partial<TValues>): void {
     Object.keys(input).forEach(key => {
       const field = this.fields[key];
 

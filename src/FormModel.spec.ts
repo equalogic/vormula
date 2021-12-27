@@ -81,6 +81,7 @@ describe('FormModel', () => {
           },
         },
       });
+      formModel.initialise({ name: 'Joseph Bloggs' });
 
       formModel.set('name', 'Joe Bloggs');
       expect(formModel.data).toEqual({ name: 'JOE BLOGGS' });
