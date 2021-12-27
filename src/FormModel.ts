@@ -2,14 +2,22 @@ import { FormModelField, FormModelFieldSchema } from './FormModelField';
 import { ServerValidationError } from './validation/ServerValidationError';
 import { ValidationRuleViolation } from './validation/ValidationRuleViolation';
 
-export type FormModelData = Record<string, any>;
+export type FormModelValues = Record<string, any>;
 
-export type FormModelSchema<TData extends FormModelData = FormModelData> = {
-  [K in keyof TData]: FormModelFieldSchema<TData[K]>;
+export type FormModelOutputValues<TValues> = Partial<Record<keyof TValues, any>>;
+
+export type FormModelSchema<
+  TValues extends FormModelValues = FormModelValues,
+  TOutput extends FormModelOutputValues<TValues> = Partial<TValues>,
+> = {
+  [K in keyof TValues]: FormModelFieldSchema<TValues[K], TOutput[K]>;
 };
 
-export type FormModelFields<TData extends FormModelData = FormModelData> = {
-  [K in keyof TData]: FormModelField<TData[K]>;
+export type FormModelFields<
+  TValues extends FormModelValues = FormModelValues,
+  TOutput extends FormModelOutputValues<TValues> = Partial<TValues>,
+> = {
+  [K in keyof TValues]: FormModelField<TValues[K], TOutput[K]>;
 };
 
 export interface FormModelError {
@@ -17,12 +25,15 @@ export interface FormModelError {
   value?: any;
 }
 
-export class FormModel<TData extends FormModelData = FormModelData> {
-  public fields: FormModelFields<TData>;
+export class FormModel<
+  TValues extends FormModelValues = FormModelValues,
+  TOutput extends FormModelOutputValues<TValues> = Partial<TValues>,
+> {
+  public fields: FormModelFields<TValues, TOutput>;
   public errors: FormModelError[] = [];
 
-  public constructor(schema: FormModelSchema<TData>) {
-    this.fields = Object.keys(schema).reduce((result, key: keyof TData) => {
+  public constructor(schema: FormModelSchema<TValues, TOutput>) {
+    this.fields = Object.keys(schema).reduce((result, key: keyof TValues) => {
       const field = schema[key];
 
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -35,18 +46,21 @@ export class FormModel<TData extends FormModelData = FormModelData> {
         errors: [],
         validationRules: [],
         ...field,
-      } as FormModelField<TData[typeof key]>;
+      } as FormModelField<TValues[typeof key], TOutput[typeof key]>;
 
       return result;
-    }, {} as FormModelFields<TData>);
+    }, {} as FormModelFields<TValues, TOutput>);
   }
 
-  public get data(): Partial<TData> {
-    return Object.keys(this.fields).reduce((data: Partial<TData>, key: keyof TData) => {
-      data[key] = this.fields[key].value;
+  public get data(): TOutput {
+    return Object.keys(this.fields).reduce((data: TOutput, key: keyof TValues) => {
+      const field = this.fields[key];
+
+      data[key] =
+        field.transform != null ? field.transform.toOutputValue(field.value) : (field.value as TOutput[typeof key]);
 
       return data;
-    }, {} as Partial<TData>);
+    }, {} as TOutput);
   }
 
   public get hasChanged(): boolean {
@@ -60,22 +74,24 @@ export class FormModel<TData extends FormModelData = FormModelData> {
     );
   }
 
-  public initialise(data: Partial<TData>): void {
-    Object.keys(data).forEach(key => {
-      const value = data[key];
+  public initialise(input: Partial<TValues | TOutput>): void {
+    Object.keys(input).forEach(key => {
+      const field = this.fields[key];
 
-      if (this.fields[key] == null) {
+      if (field == null) {
         console.warn(`Unable to initialise non-existent form field with key '${key}'`);
 
         return;
       }
 
-      this.fields[key].initialValue = value;
-      this.fields[key].value = value;
+      const value = field.transform != null ? field.transform.toModelValue(input[key]) : input[key];
+
+      field.initialValue = value;
+      field.value = value;
     });
   }
 
-  public get<K extends keyof TData>(key: K): TData[K] | undefined {
+  public get<K extends keyof TValues>(key: K): TValues[K] | undefined {
     if (this.fields[key] === undefined) {
       throw new Error(`Unable to get value of field '${key}' because it is not defined in the FormModel.`);
     }
@@ -83,7 +99,7 @@ export class FormModel<TData extends FormModelData = FormModelData> {
     return this.fields[key].value;
   }
 
-  public set<K extends keyof TData>(key: K, value: TData[K]): void {
+  public set<K extends keyof TValues>(key: K, value: TValues[K]): void {
     if (this.fields[key] === undefined) {
       throw new Error(`Unable to set value of field '${key}' because it is not defined in the FormModel.`);
     }
@@ -92,7 +108,7 @@ export class FormModel<TData extends FormModelData = FormModelData> {
   }
 
   public clearErrors(): void {
-    this.fields = Object.keys(this.fields).reduce((result, key: keyof TData) => {
+    this.fields = Object.keys(this.fields).reduce((result, key: keyof TValues) => {
       const field = this.fields[key];
 
       result[key] = {
@@ -101,7 +117,7 @@ export class FormModel<TData extends FormModelData = FormModelData> {
       };
 
       return result;
-    }, {} as FormModelFields<TData>);
+    }, {} as FormModelFields<TValues, TOutput>);
 
     this.errors = [];
   }
