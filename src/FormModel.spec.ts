@@ -59,35 +59,40 @@ describe('FormModel', () => {
     });
 
     it('Transforms form field values when given a transformer', () => {
-      const formModel = new FormModel<{ name: string }, { name: string | null }>({
-        name: {
-          label: 'Your name',
-          type: 'text',
+      const formModel = new FormModel<{ birthdate: Date | null }, { birthdate: string | null }>({
+        birthdate: {
+          label: 'Your DOB',
+          type: 'date',
           transform: {
-            toModelValue(input: string | undefined): string {
+            toModelValue(input: string | undefined): Date | null {
               if (input == null) {
-                return '';
-              }
-
-              return input.toUpperCase();
-            },
-            toOutputValue(input: string | undefined): string | null {
-              if (input == null || input.length === 0) {
                 return null;
               }
 
-              return input.toUpperCase();
+              return new Date(input);
+            },
+            toOutputValue(input: Date | undefined): string | null {
+              if (input == null) {
+                return null;
+              }
+
+              return input.toISOString();
             },
           },
         },
       });
-      formModel.initialise({ name: 'Joseph Bloggs' });
 
-      formModel.set('name', 'Joe Bloggs');
-      expect(formModel.data).toEqual({ name: 'JOE BLOGGS' });
+      formModel.initialise({ birthdate: '1980-01-01' });
+      expect(formModel.data).toEqual({ birthdate: '1980-01-01T00:00:00.000Z' });
 
-      formModel.set('name', '');
-      expect(formModel.data).toEqual({ name: null });
+      formModel.initialise({ birthdate: new Date('1965-04-04') });
+      expect(formModel.data).toEqual({ birthdate: '1965-04-04T00:00:00.000Z' });
+
+      formModel.set('birthdate', new Date('1950-06-06'));
+      expect(formModel.data).toEqual({ birthdate: '1950-06-06T00:00:00.000Z' });
+
+      formModel.set('birthdate', null);
+      expect(formModel.data).toEqual({ birthdate: null });
     });
   });
 
