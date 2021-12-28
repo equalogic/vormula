@@ -94,6 +94,19 @@ describe('FormModel', () => {
       formModel.set('birthdate', null);
       expect(formModel.data).toEqual({ birthdate: null });
     });
+
+    it('Returns form field under different name if specified', () => {
+      const formModel = new FormModel<{ potato: string }, { banana: string }>({
+        potato: {
+          name: 'banana',
+          label: 'Food',
+          type: 'text',
+        },
+      });
+      formModel.set('potato', 'Yummy');
+
+      expect(formModel.data).toEqual({ banana: 'Yummy' });
+    });
   });
 
   describe('hasChanged', () => {

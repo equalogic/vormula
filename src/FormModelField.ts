@@ -42,6 +42,7 @@ export interface FormModelFieldTransformer<TValue = any, TOutput = any> {
 }
 
 export interface FormModelFieldSchema<TValue = any, TOutput = TValue> {
+  name?: string;
   label: string;
   type?: FormModelFieldType;
   value?: TValue;
@@ -53,7 +54,7 @@ export interface FormModelFieldSchema<TValue = any, TOutput = TValue> {
 }
 
 export interface FormModelField<TValue = any, TOutput = any> extends FormModelFieldSchema<TValue, TOutput> {
-  name: string;
+  name: Extract<keyof TOutput, string>;
   type: FormModelFieldType;
   initialValue?: TValue;
   required: boolean;

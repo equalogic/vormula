@@ -1,6 +1,6 @@
-import { FormModelOutputValues, FormModelValues } from '../FormModel';
+import { FormModelValues } from '../FormModel';
 
-export function formDataToQueryParams<TData extends FormModelOutputValues<FormModelValues>>(
+export function formDataToQueryParams<TData extends FormModelValues>(
   data: TData,
   prefix: string = '',
 ): Record<string, string | undefined> {
