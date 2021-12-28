@@ -4,27 +4,19 @@ import { ValidationRuleViolation } from './validation/ValidationRuleViolation';
 
 export type FormModelValues = Record<string, any>;
 
-export type FormModelOutputValues<TValues> = Partial<Record<keyof TValues, any>>;
-
-export type FormModelInitialiseValues<
-  TValues extends FormModelValues,
-  TOutput extends FormModelOutputValues<TValues>,
-> = {
-  [K in keyof TValues]: TValues[K] | TOutput[K];
+export type FormModelInitialiseValues<TValues extends FormModelValues, TOutput extends FormModelValues = TValues> = {
+  [K in keyof TValues]: TValues[K] | TOutput[TValues[K]['name']];
 };
 
 export type FormModelSchema<
   TValues extends FormModelValues = FormModelValues,
-  TOutput extends FormModelOutputValues<TValues> = Partial<TValues>,
+  TOutput extends FormModelValues = Partial<TValues>,
 > = {
-  [K in keyof TValues]: FormModelFieldSchema<TValues[K], TOutput[K]>;
+  [K in keyof TValues]: FormModelFieldSchema<TValues[K], TOutput[TValues[K]['name']]>;
 };
 
-export type FormModelFields<
-  TValues extends FormModelValues = FormModelValues,
-  TOutput extends FormModelOutputValues<TValues> = Partial<TValues>,
-> = {
-  [K in keyof TValues]: FormModelField<TValues[K], TOutput[K]>;
+export type FormModelFields<TValues extends FormModelValues = FormModelValues> = {
+  [K in keyof TValues]: FormModelField<TValues[K]>;
 };
 
 export interface FormModelError {
@@ -34,9 +26,9 @@ export interface FormModelError {
 
 export class FormModel<
   TValues extends FormModelValues = FormModelValues,
-  TOutput extends FormModelOutputValues<TValues> = Partial<TValues>,
+  TOutput extends FormModelValues = Partial<TValues>,
 > {
-  public fields: FormModelFields<TValues, TOutput>;
+  public fields: FormModelFields<TValues>;
   public errors: FormModelError[] = [];
 
   public constructor(schema: FormModelSchema<TValues, TOutput>) {
@@ -45,7 +37,7 @@ export class FormModel<
 
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       result[key] = {
-        name: key,
+        name: String(key) as Extract<keyof TOutput, string>,
         initialValue: field.value,
         value: field.value,
         type: field.type ?? 'text',
@@ -53,18 +45,18 @@ export class FormModel<
         errors: [],
         validationRules: [],
         ...field,
-      } as FormModelField<TValues[typeof key], TOutput[typeof key]>;
+      } as FormModelField<TValues[typeof key]>;
 
       return result;
-    }, {} as FormModelFields<TValues, TOutput>);
+    }, {} as FormModelFields<TValues>);
   }
 
   public get data(): TOutput {
     return Object.keys(this.fields).reduce((data: TOutput, key: keyof TValues) => {
       const field = this.fields[key];
 
-      data[key] =
-        field.transform != null ? field.transform.toOutputValue(field.value) : (field.value as TOutput[typeof key]);
+      data[field.name as keyof TOutput] =
+        field.transform != null ? field.transform.toOutputValue(field.value) : field.value;
 
       return data;
     }, {} as TOutput);
@@ -124,7 +116,7 @@ export class FormModel<
       };
 
       return result;
-    }, {} as FormModelFields<TValues, TOutput>);
+    }, {} as FormModelFields<TValues>);
 
     this.errors = [];
   }
