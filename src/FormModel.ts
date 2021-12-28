@@ -6,6 +6,13 @@ export type FormModelValues = Record<string, any>;
 
 export type FormModelOutputValues<TValues> = Partial<Record<keyof TValues, any>>;
 
+export type FormModelInitialiseValues<
+  TValues extends FormModelValues,
+  TOutput extends FormModelOutputValues<TValues>,
+> = {
+  [K in keyof TValues]: TValues[K] | TOutput[K];
+};
+
 export type FormModelSchema<
   TValues extends FormModelValues = FormModelValues,
   TOutput extends FormModelOutputValues<TValues> = Partial<TValues>,
@@ -74,7 +81,7 @@ export class FormModel<
     );
   }
 
-  public initialise(input: Partial<TValues>): void {
+  public initialise(input: FormModelInitialiseValues<TValues, TOutput>): void {
     Object.keys(input).forEach(key => {
       const field = this.fields[key];
 
