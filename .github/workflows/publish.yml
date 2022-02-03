@@ -52,5 +52,11 @@ jobs:
       # Publish
       - name: Copy extra files into dist directory
         run: cp package.json README* dist/
+      - name: Setup GitHub package registry authentication
+        uses: actions/setup-node@v2
+        with:
+          registry-url: 'https://npm.pkg.github.com'
       - name: Publish release to NPM registry
         run: npm publish dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
