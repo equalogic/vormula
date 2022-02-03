@@ -1,15 +1,15 @@
 {
-  "name": "@madsci/vormula",
+  "name": "@equalogic/vormula",
   "version": "0.3.0",
   "description": "A simple form model library for Vue.js applications.",
-  "author": "Madscience Ltd",
+  "author": "Equalogic Ltd",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/madscience/vormula.git"
+    "url": "https://github.com/equalogic/vormula.git"
   },
   "scripts": {
     "prebuild": "rimraf dist && npm run barrels:generate",
