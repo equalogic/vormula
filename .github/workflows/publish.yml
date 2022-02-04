@@ -56,7 +56,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           registry-url: 'https://npm.pkg.github.com'
+          always-auth: true
+          token: ${{ github.token }}
       - name: Publish release to NPM registry
         run: npm publish dist
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
