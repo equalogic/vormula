@@ -13,5 +13,5 @@ module.exports = {
   }),
   coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/test/'],
   coverageDirectory: '<rootDir>/test/.coverage',
-  reporters: process.env.CI ? ['default', 'jest-github-reporter'] : ['default'],
+  reporters: process.env.CI ? ['default', 'jest-github-actions-reporter'] : ['default'],
 };
