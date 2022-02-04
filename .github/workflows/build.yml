@@ -136,6 +136,6 @@ jobs:
         run: tar --use-compress-program "zstd -d --long=31" -xf node_modules.tar.zstd
       # Tests
       - name: Run project tests
-        run: node_modules/.bin/dotenv -e .env.ci -- npm run test:ci
+        run: npm run test:ci
         env:
           CI: true
