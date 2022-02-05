@@ -30,7 +30,7 @@ jobs:
             ./node_modules.tar.zstd
           key: ${{ runner.OS }}-node14.x-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-node-14.x-
+            ${{ runner.OS }}-node14.x-
       - name: Install dependencies with NPM
         if: steps.cache_npm.outputs.cache-hit != 'true'
         run: npm ci
