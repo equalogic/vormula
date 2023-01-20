@@ -50,7 +50,7 @@
     "mkdirp": "2.1.2",
     "np": "7.6.3",
     "prettier": "2.8.3",
-    "rimraf": "4.1.0",
+    "rimraf": "4.1.1",
     "ts-jest": "29.0.5",
     "typescript": "4.6.4"
   },
