@@ -54,9 +54,6 @@
     "ts-jest": "29.1.1",
     "typescript": "4.6.4"
   },
-  "engines": {
-    "node": "^18.0.0"
-  },
   "main": "index.js",
   "types": "index.d.ts"
 }
