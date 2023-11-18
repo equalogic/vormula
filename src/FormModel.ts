@@ -92,7 +92,7 @@ export class FormModel<
 
   public get<K extends keyof TValues>(key: K): TValues[K] | undefined {
     if (this.fields[key] === undefined) {
-      throw new Error(`Unable to get value of field '${key}' because it is not defined in the FormModel.`);
+      throw new Error(`Unable to get value of field '${String(key)}' because it is not defined in the FormModel.`);
     }
 
     return this.fields[key].value;
@@ -100,7 +100,7 @@ export class FormModel<
 
   public set<K extends keyof TValues>(key: K, value: TValues[K]): void {
     if (this.fields[key] === undefined) {
-      throw new Error(`Unable to set value of field '${key}' because it is not defined in the FormModel.`);
+      throw new Error(`Unable to set value of field '${String(key)}' because it is not defined in the FormModel.`);
     }
 
     this.fields[key].value = value;
