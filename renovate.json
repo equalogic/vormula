@@ -14,7 +14,7 @@
   "rebaseWhen": "conflicted",
   "lockFileMaintenance": true,
   "labels": ["dependencies"],
-  "reviewers": ["sgarner"],
+  "reviewers": [],
   "packageRules": [
     {
       "packagePatterns": ["eslint"],
