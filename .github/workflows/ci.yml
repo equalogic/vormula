@@ -8,11 +8,11 @@ jobs:
     uses: equalogic/actions/.github/workflows/node-ci.yml@master
     with:
       build-check-command: |
-        if [ ! -f ./dist/main.js ]; then
-          echo "Something went wrong: no ./dist/main.js file was built!"
+        if [ ! -f ./dist/index.js ]; then
+          echo "Something went wrong: no ./dist/index.js file was built!"
           exit 1
         else
-          echo "Build appears to be successful: ./dist/main.js was created"
+          echo "Build appears to be successful: ./dist/index.js was created"
         fi
     secrets: inherit
 
