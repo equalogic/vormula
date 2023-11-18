@@ -34,7 +34,7 @@
   "peerDependencies": {},
   "devDependencies": {
     "@types/jest": "29.5.3",
-    "@types/lodash.isplainobject": "4.0.7",
+    "@types/lodash.isplainobject": "4.0.9",
     "@types/lodash.mapvalues": "4.6.7",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
